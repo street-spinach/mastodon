@@ -62,6 +62,9 @@ services:
     image: ghcr.io/mastodon/mastodon:v4.3.1
     restart: always
     env_file: .env.production
+    environment:
+      - UID=991
+      - GID=991
     command: bundle exec puma -C config/puma.rb
     networks:
       - external_network
@@ -76,7 +79,7 @@ services:
       - redis
       # - es
     volumes:
-      - ./public/system:/mastodon/public/system
+      - ./public/system:/mastodon/public/system:delegated
 
   streaming:
     # You can uncomment the following lines if you want to not use the prebuilt image, for example if you have local code changes
@@ -86,6 +89,9 @@ services:
     image: ghcr.io/mastodon/mastodon-streaming:v4.3.1
     restart: always
     env_file: .env.production
+    environment:
+      - UID=991
+      - GID=991
     command: node ./streaming/index.js
     networks:
       - external_network
@@ -104,6 +110,9 @@ services:
     image: ghcr.io/mastodon/mastodon:v4.3.1
     restart: always
     env_file: .env.production
+    environment:
+      - UID=991
+      - GID=991
     command: bundle exec sidekiq
     depends_on:
       - db
@@ -112,7 +121,7 @@ services:
       - external_network
       - internal_network
     volumes:
-      - ./public/system:/mastodon/public/system
+      - ./public/system:/mastodon/public/system:delegated
     healthcheck:
       test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
 
@@ -137,3 +146,5 @@ networks:
   external_network:
   internal_network:
     internal: true
+
+
