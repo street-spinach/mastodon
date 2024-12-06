@@ -80,8 +80,7 @@ services:
       # - es
     volumes:
       - ./public/system:/mastodon/public/system:delegated
-      - ./ssl/selfsigned.crt:/etc/ssl/private/selfsigned.pem  # Mount certificate
-      - ./ssl/selfsigned.key:/etc/ssl/private/selfsigned.pem
+      - ./ssl:/etc/ssl/private
       - ./config/puma.rb:/opt/mastodon/config/puma.rb
 
   streaming:
