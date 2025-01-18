@@ -11,7 +11,7 @@
 # 2. Sets the password via the Rails runner command.
 
 # ----- Adjust these if needed -----
-MASTODON_DIR="/home/mastodon/live"  # Path to your Mastodon installation
+MASTODON_DIR="/home/mastodon_source/bin"  # Path to your Mastodon installation
 # ----------------------------------
 
 # Read input arguments
@@ -35,16 +35,28 @@ cd "$MASTODON_DIR" || {
 }
 
 # 1. Create the user (confirmed so no email link is needed)
-tootctl accounts create "$USERNAME" \
+./tootctl accounts create "$USERNAME" \
   --email="$USEREMAIL" \
-  --confirmed
+  --confirmed || {
+    echo "Error: Failed to create user '$USERNAME'."
+    exit 1
+  }
+
+echo "Approving user '$USERNAME'..."
+./tootctl accounts modify "$USERNAME" --approve || {
+  echo "Error: Failed to approve user '$USERNAME'."
+  exit 1
+}
 
 # 2. Immediately set the user's password via Rails runner
-bin/rails runner "
+./rails runner "
   account = Account.find_by!(username: '$USERNAME')
   account.user.password = '$PASSWORD'
   account.user.password_confirmation = '$PASSWORD'
   account.user.save!
-"
+" || {
+  echo "Error: Failed to set password for user '$USERNAME'."
+  exit 1
+}
 
 echo "User '$USERNAME' created with email '$USEREMAIL' and password set."
