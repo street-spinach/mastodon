@@ -1,0 +1,16 @@
+{
+  "name": "sidecar",
+  "version": "1.0.0",
+  "description": "sidecar to mastodon",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "express": "^4.21.2",
+    "redis": "^4.7.0"
+  }
+}
