@@ -25,8 +25,13 @@ const { publishMessage } = require('./redis/redis');
  */
 app.post('/sidecar_proxy/add_spinach_user', (req, res) => {
   console.log(req.body);  
-  const { spinachUserId } = req.body;
-  const { email } = req.body;
+  const { spinachUserId, email } = req.body;
+
+  if (!spinachUserId || !email) {
+    return res.status(400).json({ error: "spinachUserId and email are required." });
+  }
+  
+
   publishMessage(spinachUserId, email)
     .then(() => {
       res.status(200).send('Success');
