@@ -8,7 +8,7 @@ const express = require('express');
 const axios = require('axios');
 const app = express();
 app.use(express.json());
-const PORT = 3000;
+const PORT = 3010;
 const { publishMessage } = require('./redis/redis');
 
 /**
