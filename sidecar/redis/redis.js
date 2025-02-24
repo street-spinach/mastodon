@@ -1,5 +1,6 @@
 const redis = require('redis');
-require('dotenv').config({ path: '../../.env.development' });
+
+
 
 if (!process.env.REDIS_URL) {
     console.error('REDIS_URL environment variable is not set. Exiting...');
@@ -9,6 +10,12 @@ if (!process.env.REDIS_URL) {
 const mastodonRedisClient = redis.createClient({
     url: process.env.REDIS_URL
 });
+
+mastodonRedisClient.on('error', (err) => {
+    console.error('Redis client error:', err);
+});
+
+mastodonRedisClient.connect().catch(console.error);
 
 const spinachUserQueue = 'spinach-users';
 

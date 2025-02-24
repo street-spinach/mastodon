@@ -4,7 +4,8 @@
   "description": "sidecar to mastodon",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "cross-env NODE_ENV=development node index.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,5 +14,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "redis": "^4.7.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }

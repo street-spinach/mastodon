@@ -9,6 +9,8 @@ const axios = require('axios');
 const app = express();
 app.use(express.json());
 const PORT = 3010;
+
+require('dotenv').config({ path: '../.env.development' });
 const { publishMessage } = require('./redis/redis');
 
 /**
