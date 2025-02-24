@@ -1,5 +1,5 @@
 const redis = require('redis');
-require('dotenv').config({ path: '../../.env.production' });
+require('dotenv').config({ path: '../../.env.development' });
 
 if (!process.env.REDIS_URL) {
     console.error('REDIS_URL environment variable is not set. Exiting...');
