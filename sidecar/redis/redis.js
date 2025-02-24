@@ -1,4 +1,11 @@
 const redis = require('redis');
+require('dotenv').config({ path: '../.env.production' });
+
+if (!process.env.REDIS_URL) {
+    console.error('REDIS_URL environment variable is not set. Exiting...');
+    process.exit(1);
+}
+
 const mastodonRedisClient = redis.createClient({
     url: process.env.REDIS_URL
 });
