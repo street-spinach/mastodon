@@ -39,7 +39,7 @@ app.post('/sidecar_proxy/add_spinach_user', (req, res) => {
       res.status(200).send('Success');
     })
     .catch((error) => {
-      res.status(500).send('Error');
+      res.status(500).json({ error: error.message });
     });
 });
 

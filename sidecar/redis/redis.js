@@ -21,6 +21,8 @@ const spinachUserQueue = 'spinach-users';
 
 async function publishMessage(spinachUserId, email) {
 
+    console.log("publishing message to redis");
+
     spinachUserCreationMessageMessage = JSON.stringify({
         class: 'AddSpinachUserWorker',
         args: [spinachUserId, email],

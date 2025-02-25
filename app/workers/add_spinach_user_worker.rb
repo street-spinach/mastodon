@@ -1,7 +1,7 @@
 # add new user to Mastodon
 class AddSpinachUserWorker
   include Sidekiq::Worker
-  sidekiq_options queue: :default
+  sidekiq_options queue: 'spinach-users'
 
   def perform(user_id, email)
     user = User.new(username: user_id, email: email, confirmed_at: Time.now)
