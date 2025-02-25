@@ -30,7 +30,7 @@ async function publishMessage(spinachUserId, email) {
 
     });
     return new Promise((resolve, reject) => {
-        mastodonRedisClient.rpush(spinachUserQueue, spinachUserCreationMessageMessage, (err, reply) => {
+        mastodonRedisClient.lPush(spinachUserQueue, spinachUserCreationMessageMessage, (err, reply) => {
             if (err) {
                 console.error('Error publishing message to Redis: ', err);
                 return reject(err);
