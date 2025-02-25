@@ -28,7 +28,7 @@ async function publishMessage(spinachUserId, email) {
     });
 
     try {
-        const reply = await mastodonRedisClient.lPush(spinachUserQueue, spinachUserCreationMessageMessage);
+        const reply = await mastodonRedisClient.rPush(spinachUserQueue, spinachUserCreationMessageMessage);
         console.log("Message pushed to Redis:", reply);
         return reply;
     } catch (err) {
