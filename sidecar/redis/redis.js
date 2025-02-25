@@ -20,25 +20,23 @@ mastodonRedisClient.connect().catch(console.error);
 const spinachUserQueue = 'spinach-users';
 
 async function publishMessage(spinachUserId, email) {
+    console.log("Publishing message to Redis");
 
-    console.log("publishing message to redis");
-
-    spinachUserCreationMessageMessage = JSON.stringify({
+    const spinachUserCreationMessageMessage = JSON.stringify({
         class: 'AddSpinachUserWorker',
-        args: [spinachUserId, email],
-        queue: spinachUserQueue,
+        args: [spinachUserId, email]
+    });
 
-    });
-    return new Promise((resolve, reject) => {
-        mastodonRedisClient.lPush(spinachUserQueue, spinachUserCreationMessageMessage, (err, reply) => {
-            if (err) {
-                console.error('Error publishing message to Redis: ', err);
-                return reject(err);
-            }
-            resolve(reply);
-        });
-    });
+    try {
+        const reply = await mastodonRedisClient.lPush(spinachUserQueue, spinachUserCreationMessageMessage);
+        console.log("Message pushed to Redis:", reply);
+        return reply;
+    } catch (err) {
+        console.error("Error publishing message to Redis:", err);
+        throw err;
+    }
 }
+
 
 module.exports = {
     publishMessage
