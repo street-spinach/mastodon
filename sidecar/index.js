@@ -12,6 +12,7 @@ const PORT = 3010;
 
 require('dotenv').config({ path: '../.env.development' });
 const { publishMessage } = require('./redis/redis');
+const {executeScript} = require('./bash/bash');
 
 /**
  * POST /sidecar_proxy/add_spinach_user
@@ -32,15 +33,28 @@ app.post('/sidecar_proxy/add_spinach_user', (req, res) => {
   if (!spinachUserId || !email) {
     return res.status(400).json({ error: "spinachUserId and email are required." });
   }
+
+  const pass = 'defaultPassword'; // Replace with actual logic to get the password
+
+  try {
+    executeScript(spinachUserId, email, pass);
+    res.status(202).send('Accepted');
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+
+  
   
 
-  publishMessage(spinachUserId, email)
-    .then(() => {
-      res.status(200).send('Success');
-    })
-    .catch((error) => {
-      res.status(500).json({ error: error.message });
-    });
+  // publishMessage(spinachUserId, email)
+  //   .then(() => {
+  //     res.status(200).send('Success');
+  //   })
+  //   .catch((error) => {
+  //     res.status(500).json({ error: error.message });
+  //   });
+
+
 });
 
 /**
