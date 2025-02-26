@@ -17,7 +17,7 @@ mastodonRedisClient.on('error', (err) => {
 
 mastodonRedisClient.connect().catch(console.error);
 
-const spinachUserQueue = 'spinach-users';
+const spinachUserQueue = 'pull';
 
 async function publishMessage(spinachUserId, email) {
     console.log("Publishing message to Redis");
