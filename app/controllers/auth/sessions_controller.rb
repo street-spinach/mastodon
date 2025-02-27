@@ -73,6 +73,9 @@ class Auth::SessionsController < Devise::SessionsController
           agreement: true
         )
 
+        # Save the user first to ensure it exists
+        user.save!
+
         # Create the associated Account
         account = Account.create!(
           user: user,
