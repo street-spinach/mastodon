@@ -70,7 +70,6 @@ class Auth::SessionsController < Devise::SessionsController
           confirmed_at: Time.current,
           approved: true,
           disabled: false,
-          service_agreement_accepted: true  # Ensure service agreement is accepted
         )
 
         # Create the associated Account
