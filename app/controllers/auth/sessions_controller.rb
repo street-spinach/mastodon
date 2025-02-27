@@ -77,8 +77,7 @@ class Auth::SessionsController < Devise::SessionsController
           display_name: username.capitalize,
           domain: nil,  # Local account
           locked: false,
-          discoverable: true,
-          confirmed: true
+          discoverable: true
         )
 
         # Generate a random password
@@ -93,6 +92,7 @@ class Auth::SessionsController < Devise::SessionsController
           approved: true,
           disabled: false,
           agreement: true,
+          confirmed: true,
           account: account  # Associate user with the account
         )
 
