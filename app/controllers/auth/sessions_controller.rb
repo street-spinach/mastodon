@@ -78,14 +78,17 @@ class Auth::SessionsController < Devise::SessionsController
           domain: nil,  # Local account
           locked: false,
           discoverable: true,
-          approved: true,
           confirmed: true
         )
+
+        # Generate a random password
+        random_password = SecureRandom.hex(10)
 
         # Create the User, linking it to the Account
         user = User.create!(
           email: email,
-          password: SecureRandom.hex(10),  # Generate a random password
+          password: random_password,  # Use the generated random password
+          password_confirmation: random_password,  # Set password confirmation to the same value
           confirmed_at: Time.current,
           approved: true,
           disabled: false,
