@@ -98,6 +98,7 @@ class Auth::SessionsController < Devise::SessionsController
         # Now update the Account to reference the User
         account.update!(user: user)
       end
+      system("RAILS_ENV=development bin/tootctl accounts modify #{username} --approve")
     end
 
     if user
