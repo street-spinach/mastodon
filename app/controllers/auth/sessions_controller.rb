@@ -20,6 +20,62 @@ class Auth::SessionsController < Devise::SessionsController
     p.form_action(false)
   end
 
+  def generate_access_token(user, app_name)
+
+    Doorkeeper::AccessToken.create!(
+      resource_owner_id: user.id, 
+      expires_in: 2.years.to_i,
+      scopes: "read write follow push",
+      application_id: Doorkeeper::Application.find_by(name: app_name).id
+      ).token
+
+  end
+
+
+  def create_with_jwt
+    jwt_token = params[:jwt_token]  # JWT from Firebase
+
+    if jwt_token.blank?
+      return render json: { error: 'JWT token is missing' }, status: :bad_request
+    end
+
+
+    begin
+      decoded_token = JWT.decode(jwt_token, nil, false)  # Use Firebase public keys for verification
+      firebase_uid = decoded_token[0]["uid"]
+      email = decoded_token[0]["claims"]["email"]
+      username = email.split("@").first
+
+      if firebase_uid.blank? || email.blank? || username.blank?
+        return render json: { error: 'Invalid JWT token: missing required fields' }, status: :bad_request
+      end
+    rescue JWT::DecodeError => e
+      return render json: { error: 'Invalid JWT token' }, status: :bad_request
+    end
+
+    app_name = params[:app_name]
+
+    if app_name.blank?
+      return render json: { error: 'App name is missing' }, status: :bad_request
+    end
+
+    user = User.find_by(email: email)
+
+    unless user
+      user = User.new(email: email, username: username, password: SecureRandom.hex(8), confirmed_at: Time.now, approved: true, disabled: false)
+      user.role = :user # Default role
+      user.save
+    end
+
+    if user
+      access_token = generate_access_token(user, app_name)
+      render json: { access_token: access_token, mastadon_user_id: user.id }, status: :ok
+    else
+      render json: { error: 'User not found or could not be created' }, status: :unauthorized
+    end
+
+  end
+
   def create
     super do |resource|
       # We only need to call this if this hasn't already been

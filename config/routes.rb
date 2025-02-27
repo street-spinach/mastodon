@@ -78,6 +78,7 @@ Rails.application.routes.draw do
       resource :challenge, only: [:create]
       get 'sessions/security_key_options', to: 'sessions#webauthn_options'
       post 'captcha_confirmation', to: 'confirmations#confirm_captcha', as: :captcha_confirmation
+      post 'jwt_login', to: 'sessions#create_with_jwt'
     end
   end
 
