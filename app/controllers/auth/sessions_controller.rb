@@ -66,9 +66,11 @@ class Auth::SessionsController < Devise::SessionsController
         # Create a new User
         user = User.create!(
           email: email,
+          password: SecureRandom.hex(10),  # Generate a random password
           confirmed_at: Time.current,
           approved: true,
-          disabled: false
+          disabled: false,
+          service_agreement_accepted: true  # Ensure service agreement is accepted
         )
 
         # Create the associated Account
