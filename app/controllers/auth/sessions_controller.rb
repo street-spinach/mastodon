@@ -11,6 +11,7 @@ class Auth::SessionsController < Devise::SessionsController
   skip_before_action :require_no_authentication, only: [:create]
   skip_before_action :require_functional!
   skip_before_action :update_user_sign_in
+  skip_before_action :verify_authenticity_token, only: [:create_with_jwt]
 
   prepend_before_action :check_suspicious!, only: [:create]
 
