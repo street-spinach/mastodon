@@ -92,7 +92,6 @@ class Auth::SessionsController < Devise::SessionsController
           approved: true,
           disabled: false,
           agreement: true,
-          confirmed: true,
           account: account  # Associate user with the account
         )
 
