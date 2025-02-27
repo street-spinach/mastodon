@@ -53,11 +53,19 @@ class Auth::SessionsController < Devise::SessionsController
       return render json: { error: 'Invalid JWT token' }, status: :bad_request
     end
 
-    app_id = params[:app_id]
+    client_id = params[:client_id]
 
-    if app_id.blank?
+    if client_id.blank?
       return render json: { error: 'App id is missing' }, status: :bad_request
     end
+
+    application = Doorkeeper::Application.find_by(uid: client_id)
+    
+    if application.nil?
+      return render json: { error: 'App not found' }, status: :bad_request
+    end
+
+    app_id = application.id
 
     user = User.find_by(email: email)
 
