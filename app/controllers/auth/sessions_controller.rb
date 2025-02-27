@@ -40,7 +40,6 @@ class Auth::SessionsController < Devise::SessionsController
       return render json: { error: 'JWT token is missing' }, status: :bad_request
     end
 
-
     begin
       decoded_token = JWT.decode(jwt_token, nil, false)  # Use Firebase public keys for verification
       firebase_uid = decoded_token[0]["uid"]
@@ -84,6 +83,7 @@ class Auth::SessionsController < Devise::SessionsController
 
         user.update!(account: account)
       end
+    end
 
     if user
       access_token = generate_access_token(user, app_id)
@@ -91,7 +91,6 @@ class Auth::SessionsController < Devise::SessionsController
     else
       render json: { error: 'User not found or could not be created' }, status: :unauthorized
     end
-
   end
 
   def create
