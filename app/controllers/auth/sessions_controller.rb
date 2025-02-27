@@ -70,6 +70,7 @@ class Auth::SessionsController < Devise::SessionsController
           confirmed_at: Time.current,
           approved: true,
           disabled: false,
+          agreement: true
         )
 
         # Create the associated Account
