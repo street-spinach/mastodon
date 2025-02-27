@@ -77,7 +77,9 @@ class Auth::SessionsController < Devise::SessionsController
           display_name: username.capitalize,
           domain: nil,  # Local account
           locked: false,
-          discoverable: true
+          discoverable: true,
+          approved: true,
+          confirmed: true
         )
 
         # Create the User, linking it to the Account
