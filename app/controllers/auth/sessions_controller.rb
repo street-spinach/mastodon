@@ -63,30 +63,28 @@ class Auth::SessionsController < Devise::SessionsController
 
     unless user
       ActiveRecord::Base.transaction do
-        # Create a new User
-        user = User.create!(
-          email: email,
-          password: SecureRandom.hex(10),  # Generate a random password
-          confirmed_at: Time.current,
-          approved: true,
-          disabled: false,
-          agreement: true
-        )
-
-        # Save the user first to ensure it exists
-        user.save!
-
-        # Create the associated Account
+        # Create the Account first
         account = Account.create!(
-          user: user,
-          username: username,  # This is where the username should go
+          username: username,
           display_name: username.capitalize,
           domain: nil,  # Local account
           locked: false,
           discoverable: true
         )
 
-        user.update!(account: account)
+        # Create the User, linking it to the Account
+        user = User.create!(
+          email: email,
+          password: SecureRandom.hex(10),  # Generate a random password
+          confirmed_at: Time.current,
+          approved: true,
+          disabled: false,
+          agreement: true,
+          account: account  # Associate user with the account
+        )
+
+        # Now update the Account to reference the User
+        account.update!(user: user)
       end
     end
 
