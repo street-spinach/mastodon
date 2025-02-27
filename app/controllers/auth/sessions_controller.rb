@@ -63,14 +63,31 @@ class Auth::SessionsController < Devise::SessionsController
     user = User.find_by(email: email)
 
     unless user
-      user = User.new(email: email, username: username, password: SecureRandom.hex(8), confirmed_at: Time.now, approved: true, disabled: false)
-      user.role = :user # Default role
-      user.save
-    end
+      ActiveRecord::Base.transaction do
+        # Create a new User
+        user = User.create!(
+          email: email,
+          confirmed_at: Time.current,
+          approved: true,
+          disabled: false
+        )
+
+        # Create the associated Account
+        account = Account.create!(
+          user: user,
+          username: username,  # This is where the username should go
+          display_name: username.capitalize,
+          domain: nil,  # Local account
+          locked: false,
+          discoverable: true
+        )
+
+        user.update!(account: account)
+      end
 
     if user
       access_token = generate_access_token(user, app_id)
-      render json: { access_token: access_token, mastadon_user_id: user.id }, status: :ok
+      render json: { access_token: access_token, mastadon_user_id: user.id, mastadon_account_id: user.account.id }, status: :ok
     else
       render json: { error: 'User not found or could not be created' }, status: :unauthorized
     end
