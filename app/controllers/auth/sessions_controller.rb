@@ -20,13 +20,13 @@ class Auth::SessionsController < Devise::SessionsController
     p.form_action(false)
   end
 
-  def generate_access_token(user, app_name)
+  def generate_access_token(user, app_id)
 
     Doorkeeper::AccessToken.create!(
       resource_owner_id: user.id, 
       expires_in: 2.years.to_i,
       scopes: "read write follow push",
-      application_id: Doorkeeper::Application.find_by(name: app_name).id
+      application_id: app_id
       ).token
 
   end
@@ -53,10 +53,10 @@ class Auth::SessionsController < Devise::SessionsController
       return render json: { error: 'Invalid JWT token' }, status: :bad_request
     end
 
-    app_name = params[:app_name]
+    app_id = params[:app_id]
 
-    if app_name.blank?
-      return render json: { error: 'App name is missing' }, status: :bad_request
+    if app_id.blank?
+      return render json: { error: 'App id is missing' }, status: :bad_request
     end
 
     user = User.find_by(email: email)
@@ -68,7 +68,7 @@ class Auth::SessionsController < Devise::SessionsController
     end
 
     if user
-      access_token = generate_access_token(user, app_name)
+      access_token = generate_access_token(user, app_id)
       render json: { access_token: access_token, mastadon_user_id: user.id }, status: :ok
     else
       render json: { error: 'User not found or could not be created' }, status: :unauthorized
